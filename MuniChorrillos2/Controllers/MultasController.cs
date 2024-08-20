@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MuniChorrillos2.Models;
 
+
 namespace MuniChorrillos2.Controllers
 {
     public class MultasController : Controller
@@ -15,18 +16,35 @@ namespace MuniChorrillos2.Controllers
         }
 
         // GET: MultasController
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            var multas = await _context.Multa
+            var multas = _context.Multa
                 .Include(m => m.IdDepositoNavigation)
                 .Include(m => m.IdInfraccionNavigation)
                 .Include(m => m.IdPersonalNavigation)
-                .ToListAsync();
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                multas = multas.Where(m => m.Placa.Contains(searchTerm) ||
+                                           m.Propietario.Contains(searchTerm) ||
+                                           m.NroSerie.Contains(searchTerm));
+            }
+
+            var result = await multas.ToListAsync();
+
             ViewData["IdDeposito"] = new SelectList(_context.Depositos, "IdDeposito", "NomDeposito");
             ViewData["IdInfraccion"] = new SelectList(_context.Infraccions, "IdInfraccion", "Descripcion");
             ViewData["IdPersonal"] = new SelectList(_context.Personals, "IdPersonal", "UsuarioAcceso");
-            return View(multas);
+
+            ViewData["SearchTerm"] = searchTerm ?? string.Empty; // Pasar el valor de búsqueda a la vista, asegurando que no sea null
+
+            return View(result);
         }
+
+
+
+
 
         // POST: MultasController/CreateOrUpdate
         [HttpPost]

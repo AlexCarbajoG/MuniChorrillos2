@@ -1,0 +1,200 @@
+﻿															 @model IEnumerable<MuniChorrillos2.Models.ControlVehicular>
+
+@{
+    ViewData["Title"] = "Mantenimiento de Control Vehicular";
+    var successMessage = TempData["SuccessMessage"] as string;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <div class="container">
+        <div class="card mt-4">
+            <div class="card-header">
+                Mantenimiento de Control Vehicular
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <div class="input-group input-group-md" style="max-width: 300px;">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Buscar...">
+                    </div>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalControlVehicular">Agregar</button>
+                </div>
+                <hr />
+                <div class="table-responsive">
+                    <table class="table table-striped mx-auto" id="tblControlVehicular">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Placa</th>
+                                <th scope="col">Hora de Ingreso</th>
+                                <th scope="col">Hora de Salida</th>
+                                <th scope="col">Día</th>
+                                <th scope="col">Cochera</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td>@Html.DisplayFor(modelItem => item.Placa)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Hingreso)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Hsalida)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Dia)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Cochera)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Estado)</td>
+                                    <td>
+
+                                        @* boton de que solo maneja la salida *@
+                                        <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalActualizarHsalida"
+                                                data-id="@item.IdControl" data-hsalida="@item.Hsalida">
+                                            Actualizar Hora de Salida
+                                        </button>
+
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete"
+                                                data-id="@item.IdControl">
+                                                Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/actualizar Control Vehicular -->
+    <div class="modal fade" id="modalControlVehicular" tabindex="-1" aria-labelledby="modalLabelControlVehicular" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalLabelControlVehicular">Control Vehicular</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="controlVehicularForm" action="/ControlVehicular/CreateOrUpdate" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="IdControl" name="IdControl" value="0">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="txtPlaca" name="Placa" placeholder="Placa">
+                            <label for="txtPlaca">Placa</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="time" class="form-control" id="txtHingreso" name="Hingreso" placeholder="Hora de Ingreso">
+                            <label for="txtHingreso">Hora de Ingreso</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="time" class="form-control" id="txtHsalida" name="Hsalida" placeholder="Hora de Salida" value="00:00" readonly>
+                            <label for="txtHsalida">Hora de Salida</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="txtDia" name="Dia" placeholder="Día">
+                            <label for="txtDia">Día</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <select class="form-control" id="txtCochera" name="Cochera">
+                                @for (int i = 1; i <= 30; i++)
+                                {
+                                    <option value="@i">@i</option>
+                                }
+                            </select>
+                            <label for="txtCochera">Cochera</label>
+                        </div>
+
+
+                        <div class="form-floating mb-3">
+                            <select class="form-control" id="txtEstado" name="Estado">
+                                <option value="Libre">Libre</option>
+                                <option value="Ocupado">Ocupado</option>
+                            </select>
+                            <label for="txtEstado">Estado</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button id="btnGuardarControlVehicular" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para actualizar la Hora de Salida -->
+    <div class="modal fade" id="modalActualizarHsalida" tabindex="-1" aria-labelledby="modalLabelHsalida" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalLabelHsalida">Actualizar Hora de Salida</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formActualizarHsalida" action="/ControlVehicular/ActualizarHsalida" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="IdControl" name="IdControl" value="0">
+                        <div class="form-floating mb-3">
+                            <input type="time" class="form-control" id="txtHsalidaUpdate" name="Hsalida" placeholder="Hora de Salida">
+                            <label for="txtHsalidaUpdate">Hora de Salida</label>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button id="btnGuardarHsalida" type="button" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal para confirmar eliminación -->
+    <div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteModalLabel">Confirmar eliminación</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar este Control Vehicular?
+                </div>
+                <div class="modal-footer">
+                    <form id="deleteForm" action="/ControlVehicular/DeleteConfirmed" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" id="deleteControlId" name="id" value="">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script>
+        //para el manejo del mensaje de conformidad
+        var successMessage = '@Html.Raw(successMessage ?? "")';
+        if (successMessage !== "") {
+            $(document).ready(function () {
+                $('#modalSuccess').modal('show');
+            });
+        }
+    </script>
+    <script src="~/js/ControlVehicular.js" asp-append-version="true"></script>
+
+</body>
+</html>

@@ -27,6 +27,7 @@
                 <table class="table table-striped mx-auto" id="tblarea">                 
                     <thead>
                         <tr>
+                                <th scope="col">#</th>
                             <th scope="col">@Html.DisplayNameFor(model => model.First().NomArea)</th>
                             <th scope="col">Acciones</th>
                         </tr>
@@ -35,6 +36,7 @@
                         @foreach (var item in Model)
                         {
                             <tr>
+                                    <td></td>
                                 <td>@Html.DisplayFor(modelItem => item.NomArea)</td>
                                 <td>
                                     <button type="button" class="btn btn-info btnactualizar" data-bs-toggle="modal" data-bs-target="#modalarea"

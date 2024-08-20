@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MuniChorrillos2.Models;
 
@@ -11,9 +12,11 @@ using MuniChorrillos2.Models;
 namespace MuniChorrillos2.Migrations
 {
     [DbContext(typeof(Bdmultas2Context))]
-    partial class Bdmultas2ContextModelSnapshot : ModelSnapshot
+    [Migration("20240820035418_AddCocheraAndEstadoControlVehicular")]
+    partial class AddCocheraAndEstadoControlVehicular
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

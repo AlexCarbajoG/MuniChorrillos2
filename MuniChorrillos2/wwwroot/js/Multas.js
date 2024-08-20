@@ -52,7 +52,7 @@
         modal.find('#deleteMultumId').val(button.data('id'));
     });
 
-    
+
     // Manejo del modal para mostrar la imagen
     $('#imageModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Botón que abrió el modal

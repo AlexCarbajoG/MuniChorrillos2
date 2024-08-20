@@ -1,6 +1,16 @@
 ﻿
 
 $(document).ready(function () {
+
+    // Función para actualizar la enumeración
+    function updateEnumeration() {
+        $('#tblarea tbody tr').each(function (index) {
+            $(this).find('td:first').text(index + 1);
+        });
+    }
+    // Llamar a la función al cargar la página para enumerar las filas iniciales
+    updateEnumeration();
+
     $('#modalarea').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Botón que disparó el modal
         var areaId = button.data('areaid'); // Extraer info de atributos data-*

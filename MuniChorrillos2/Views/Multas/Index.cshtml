@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<MuniChorrillos2.Models.Multum>
 
+
 @{
     ViewData["Title"] = "Mantenimiento de Multas";
     var successMessage = TempData["SuccessMessage"] as string;
@@ -11,6 +12,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Multas.css" asp-append-version="true" />
     <title>@ViewData["Title"]</title>
 </head>
 <body>
@@ -26,7 +28,20 @@
                         @successMessage
                     </div>
                 }
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMultum">Agregar</button>
+                <div class="d-flex justify-content-between mb-2">
+                    <div>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalMultum">Agregar</button>
+                    </div>
+                    <div>
+                        <form class="d-flex" method="get" action="@Url.Action("Index", "Multas")" id="searchForm">
+                            <input class="form-control me-2" type="search" placeholder="Buscar" aria-label="Buscar" name="searchTerm" value="@ViewData["SearchTerm"]">
+                            <button class="btn btn-outline-success" type="submit">Buscar</button>
+                        </form>
+                    </div>
+
+
+                </div>
+
                 <hr />
                 <div class="table-responsive">
                     <table class="table table-striped mx-auto" id="tblMultum">
@@ -89,7 +104,7 @@
                                     <td>
                                         <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#imageModal"
                                                 data-imagen="@item.ImagenBase64">
-                                                Ver Multa
+                                            Ver Multa
                                         </button>
                                     </td>
                                     <td>
@@ -115,6 +130,7 @@
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </div>
     </div>
@@ -302,6 +318,13 @@
                 $('#modalSuccess').modal('show');
             });
         }
+    </script>
+    <script>
+        document.getElementById('searchForm').querySelector('input[name="searchTerm"]').addEventListener('input', function () {
+            if (this.value === '') {
+                document.getElementById('searchForm').submit(); // Envía el formulario automáticamente si el campo de búsqueda está vacío
+            }
+        });
     </script>
     <script src="~/js/Multas.js" asp-append-version="true"></script>
 </body>
